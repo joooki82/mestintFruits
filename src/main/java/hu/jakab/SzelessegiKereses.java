@@ -6,13 +6,13 @@ import java.util.List;
 import java.util.Queue;
 
 class SzelessegiKereses extends GrafKereso {
-    Queue<Csucs> nyilt; // Nyílt csúcsok halmaza.
-    List<Csucs> zart; // Zárt csúcsok halmaza.
+    Queue<Csucs> nyilt; // Nyílt csúcsok halmaza. Sorban tárolom őket. Itt választom ki a következő kiterjesztendő csúcsot.
+    List<Csucs> zart; // Zárt csúcsok halmaza. Itt tárolom azokat a csúcsokat, amiket már kiterjesztettem.
     boolean korFigyeles; // Ha hamis, végtelen ciklusba eshet.
 
     public SzelessegiKereses(Csucs startCsucs, boolean korFigyeles) {
         super(startCsucs);
-        nyilt = new LinkedList<>();
+        nyilt = new LinkedList<>(); // A nyílt csúcsokat sorban tárolom.
         nyilt.add(startCsucs); // kezdetben csak a start csúcs nyílt
         zart = new ArrayList<>(); // kezdetben a zárt csúcsok halmaza üres
         this.korFigyeles = korFigyeles;
