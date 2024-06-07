@@ -2,7 +2,7 @@ package hu.jakab;
 
 import java.util.Objects;
 
-class Allapot extends AbsztraktAllapot {
+public class Allapot extends AbsztraktAllapot {
     int apples, pears, peaches;
 
     public Allapot(int apples, int pears, int peaches) {
@@ -13,7 +13,9 @@ class Allapot extends AbsztraktAllapot {
 
     @Override
     public boolean allapotE() {
-        return (apples == 13 && pears == 46 && peaches == 59);
+        // A valid intermediate state can have any combination of fruits.
+        // The method should simply confirm that no counts are negative.
+        return apples >= 0 && pears >= 0 && peaches >= 0;
     }
 
     @Override
@@ -23,48 +25,89 @@ class Allapot extends AbsztraktAllapot {
 
     @Override
     public int operatorokSzama() {
-        return 3; // Three types of exchanges
+        return 3;
     }
 
     @Override
     public boolean szuperOperator(int i) {
         switch (i) {
             case 0:
-                if (apples > 0 && pears > 0) {
-                    apples--;
-                    pears--;
-                    peaches += 2;
-                    return true;
-                }
-                break;
+                return op1();
             case 1:
-                if (apples > 0 && peaches > 0) {
-                    apples--;
-                    peaches--;
-                    pears += 2;
-                    return true;
-                }
-                break;
+                return op2();
             case 2:
-                if (pears > 0 && peaches > 0) {
-                    pears--;
-                    peaches--;
-                    apples += 2;
-                    return true;
-                }
-                break;
+                return op3();
+            default:
+                return false;
         }
+    }
+
+    private boolean op1() {
+        if (!preOp1()) return false;
+        // Clone current state to revert if necessary
+        Allapot oldState = (Allapot) this.clone();
+        // State transition: exchange apples and pears for peaches
+        apples--;
+        pears--;
+        peaches += 2;
+        // Postcondition check
+        if (allapotE()) return true;
+        // Revert state transition
+        this.apples = oldState.apples;
+        this.pears = oldState.pears;
+        this.peaches = oldState.peaches;
         return false;
     }
 
-    @Override
-    public Object clone() throws CloneNotSupportedException {
-        return new Allapot(apples, pears, peaches);
+    private boolean preOp1() {
+        return apples > 0 && pears > 0;
+    }
+
+    private boolean op2() {
+        if (!preOp2()) return false;
+        // Clone current state to revert if necessary
+        Allapot oldState = (Allapot) this.clone();
+        // State transition: exchange apples and peaches for pears
+        apples--;
+        peaches--;
+        pears += 2;
+        // Postcondition check
+        if (allapotE()) return true;
+        // Revert state transition
+        this.apples = oldState.apples;
+        this.peaches = oldState.peaches;
+        this.pears = oldState.pears;
+        return false;
+    }
+
+    private boolean preOp2() {
+        return apples > 0 && peaches > 0;
+    }
+
+    private boolean op3() {
+        if (!preOp3()) return false;
+        // Clone current state to revert if necessary
+        Allapot oldState = (Allapot) this.clone();
+        // State transition: exchange pears and peaches for apples
+        pears--;
+        peaches--;
+        apples += 2;
+        // Postcondition check
+        if (allapotE()) return true;
+        // Revert state transition
+        this.pears = oldState.pears;
+        this.peaches = oldState.peaches;
+        this.apples = oldState.apples;
+        return false;
+    }
+
+    private boolean preOp3() {
+        return pears > 0 && peaches > 0;
     }
 
     @Override
-    public String toString() {
-        return "Allapot [apples=" + apples + ", pears=" + pears + ", peaches=" + peaches + "]";
+    public Object clone() {
+        return new Allapot(apples, pears, peaches);
     }
 
     @Override
@@ -78,5 +121,10 @@ class Allapot extends AbsztraktAllapot {
     @Override
     public int hashCode() {
         return Objects.hash(apples, pears, peaches);
+    }
+
+    @Override
+    public String toString() {
+        return "Allapot [apples=" + apples + ", pears=" + pears + ", peaches=" + peaches + "]";
     }
 }
